@@ -121,9 +121,9 @@ spec:
         imagePullPolicy: {{ .Values.consulAgent.pullPolicy }}
         securityContext:
           readOnlyRootFilesystem: true
-        volumes:
+      volumes:
 {{- if .Values.consulAgent.extraVolumes }}
-{{ toYaml .Values.consulAgent.extraVolumes | indent 8}}
+{{ toYaml .Values.consulAgent.extraVolumes | indent 6}}
 {{- end }}
         volumeMounts:
         - name: consul-data
