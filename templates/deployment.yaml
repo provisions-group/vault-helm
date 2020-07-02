@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "vault.fullname" . }}
@@ -14,6 +14,9 @@ metadata:
 {{ toYaml .Values.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "vault.name" . }}  
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -121,10 +124,6 @@ spec:
         imagePullPolicy: {{ .Values.consulAgent.pullPolicy }}
         securityContext:
           readOnlyRootFilesystem: true
-        volumes:
-{{- if .Values.consulAgent.extraVolumes }}
-{{ toYaml .Values.consulAgent.extraVolumes | indent 8}}
-{{- end }}
         volumeMounts:
         - name: consul-data
           mountPath: /etc/consul
@@ -208,6 +207,9 @@ spec:
           emptyDir: {}
 {{- if .Values.vault.extraVolumes }}
 {{ toYaml .Values.vault.extraVolumes | indent 8}}
+{{- end }}
+{{- if .Values.consulAgent.extraVolumes }}
+{{ toYaml .Values.consulAgent.extraVolumes | indent 8}}
 {{- end }}
         {{- if .Values.consulAgent.join }}
         - name: consul-data
